@@ -1,0 +1,67 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.title {
+    text-align: center;
+    font-size: 20px;
+    margin: 10px;
+    padding: 10px;
+}
+
+.top-nav {
+    background-color: #555;
+    overflow: hidden;
+    color: white;
+    font-size: 25px;
+    padding: 10px;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.left {
+    flex: 1;
+    background-color: darkslategray;
+}
+
+.project {
+    background-color: whitesmoke;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+.middle {
+    flex: 3;
+    background-color: slategray;
+}
+
+.task {
+    background-color: whitesmoke;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+.right {
+    flex: 2;
+    background-color: lightslategrey;
+}
+
+.bottom-nav {
+    background-color: #555;
+    overflow: hidden;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align:right;
+    color: white;
+    padding: 10px;
+}
+
