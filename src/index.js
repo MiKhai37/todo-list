@@ -1,10 +1,13 @@
 import './style.css';
-import Task from './modules/Task';'./modules/Task.js';
-import Project from './modules/Project';'./modules/Project.js';
+import './overlayStyle.css';
+import Task from './modules/Task';
+import Project from './modules/Project';
+import UI from './modules/UI'
 
-const allProject = new Project('All', 'All Tasks', 'normal');
-const firstProject = new Project('First', 'some todos', 'normal');
-const secondProject = new Project('Second', 'some todos', 'normal');
+
+const allProject = new Project('All Tasks', 'This is the default project, it contains all the tasks');
+const firstProject = new Project('First', 'This is a test project');
+const secondProject = new Project('Second', 'This is a test project');
 
 const projectsArr = [allProject, firstProject, secondProject];
 
@@ -27,13 +30,14 @@ allProject.addTask(task5);
 
 let currentProject = allProject;
 
+
+
 function renderProjects(projectList, container) {
   container.innerHTML = ""
   
-
   const projectsTitle = document.createElement('div');
   projectsTitle.classList.add('title');
-  projectsTitle.textContent = 'Projects'
+  projectsTitle.textContent = 'Projects';
   container.appendChild(projectsTitle);
   
   projectList.forEach(project => {
@@ -49,7 +53,7 @@ function renderProjects(projectList, container) {
       console.log(e);
 
       currentProject = project;
-      renderProjects(projectList, container)
+      renderProjects(projectList, container);
       renderTasks(currentProject, document.querySelector('.tasks'));
     });
 
@@ -58,18 +62,73 @@ function renderProjects(projectList, container) {
   const addProjectBtn = document.createElement('button');
   addProjectBtn.classList.add('task');
   addProjectBtn.textContent = '+';
-  container.appendChild(addProjectBtn)
+  container.appendChild(addProjectBtn);
   addProjectBtn.addEventListener('click', (e) => {
-    console.log(e);
-    addProject(projectsArr)
-    renderProjects(projectList, container)
+    overlayOn()
   })
 }
 
-function addProject(projectList) {
-  projectList.push(new Project('New Project', 'some todos', 'normal'))
+function divOverlayProject() {
+  const overlay = document.createElement('div');
+  overlay.classList.add('project-overlay');
+
+  const formContainer = document.createElement('div');
+  formContainer.classList.add('form-container');
+  overlay.appendChild(formContainer);
+
+  const form = document.createElement('form');
+  form.classList.add('form');
+  formContainer.appendChild(form);
+
+  const formTitle = document.createElement('h2');
+  formTitle.textContent = 'Add New Project'
+  formTitle.style.color = 'white'
+  form.appendChild(formTitle);
+
+  const inputContainer = document.createElement('div');
+  inputContainer.classList.add('input-container')
+  form.appendChild(inputContainer);
+
+  const titleInput = document.createElement('input');
+  titleInput.classList.add('title-input');
+  titleInput.type = 'text'
+  titleInput.placeholder = 'Project Name';
+  inputContainer.appendChild(titleInput);
+
+  const descriptionInput = document.createElement('input');
+  descriptionInput.classList.add('description-input');
+  descriptionInput.type = 'text'
+  descriptionInput.placeholder = 'Project Description';
+  inputContainer.appendChild(descriptionInput);
+
+  const addBtn = document.createElement('button');
+  addBtn.classList.add('button');
+  addBtn.type = 'button';
+  addBtn.textContent = "Add New Project";
+  inputContainer.appendChild(addBtn);
+
+  addBtn.addEventListener('click', (e) => {
+    const title = document.querySelector('.title-input').value;
+    const description = document.querySelector('.description-input').value;
+    projectsArr.push(new Project(title, description));
+    renderProjects(projectsArr,document.querySelector('.projects'));
+    overlayOff();
+  })
+
+  return overlay;
 }
 
+function overlayOn() {
+  document.querySelector('.project-overlay').style.display = 'block';
+}
+
+function overlayOff() {
+  document.querySelector('.project-overlay').style.display = 'none';
+}
+
+function addProject(projectList) {
+  projectList.push(new Project('New Project', 'some todos'))
+}
 
 function renderTasks(project, container) {
   container.innerHTML = ""
@@ -85,11 +144,9 @@ function renderTasks(project, container) {
     divTask.textContent = `${task.title} ${task.project}`;
 
     divTask.addEventListener('mouseenter', (e) => {
-      console.log(e)
       divTask.innerHTML= `${task.title}<br>${task.description}`;
     });
     divTask.addEventListener('mouseleave', (e) => {
-      console.log(e)
       divTask.textContent = `${task.title} ${task.project}`;
     });
 
@@ -98,17 +155,19 @@ function renderTasks(project, container) {
   const addTaskBtn = document.createElement('button');
   addTaskBtn.classList.add('task');
   addTaskBtn.textContent = '+';
-  container.appendChild(addTaskBtn)
+  container.appendChild(addTaskBtn);
   addTaskBtn.addEventListener('click', () => {
-    addTask('new task', 'description of the new task')
-    renderTasks(project, container)
+    addTask('new task', 'description of the new task');
+    renderTasks(project, container);
   })
 }
 
 function addTask(title, description) {
-  const task = new Task(title, description, currentProject.title)
-  currentProject.addTask(task)
-  allProject.addTask(task)
+  const task = new Task(title, description, currentProject.title);
+  currentProject.addTask(task);
+  if (currentProject.title != 'All Tasks') {
+    allProject.addTask(task);
+  }
 }
 
 function initRender() {
@@ -128,7 +187,7 @@ function initRender() {
 
     //Projects
     const projects = document.createElement('div');
-    projects.classList.add('left');
+    projects.classList.add('projects');
     renderProjects(projectsArr, projects)
 
     // Todos
@@ -137,7 +196,7 @@ function initRender() {
     renderTasks(currentProject, todos);
 
     const timers = document.createElement('div');
-    timers.classList.add('right');
+    timers.classList.add('timers');
     const timersTitle = document.createElement('div');
     timersTitle.classList.add('title');
     timersTitle.textContent = 'Timers'
@@ -154,6 +213,7 @@ function initRender() {
     element.appendChild(middle);
     element.appendChild(footer);
     
+    element.appendChild(divOverlayProject())
     //element.innerHTML = "<h1>ToDo App</h1>"
     return element;
   }

@@ -23,7 +23,7 @@ body, html {
     flex-direction: row;
 }
 
-.left {
+.projects {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -53,18 +53,15 @@ body, html {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid black;
-    height: 50px;
-    transition: 0.1s;
 }
 
 .task:hover {
-    height: 100px;
 }
 
-.right {
+.timers {
     display: flex;
     flex-direction: column;
-    flex: 2;
+    flex: 1;
     background-color: lightslategrey;
 }
 
@@ -78,4 +75,3 @@ body, html {
     color: white;
     padding: 10px;
 }
-
