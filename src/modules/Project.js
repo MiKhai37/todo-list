@@ -5,8 +5,13 @@ export default class Project {
         this.priority = priority;
         this.tasks = [];
     }
-    addTask(Task){
+    addTask(Task) {
         this.tasks.push(Task);
+        if (this.title != "All") {
         Task.project = this.title;
+        }
+    }
+    delTask(Task) {
+
     }
 };

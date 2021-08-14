@@ -24,11 +24,14 @@ body, html {
 }
 
 .left {
+    display: flex;
+    flex-direction: column;
     flex: 1;
     background-color: darkslategray;
 }
 
 .project {
+    text-align: center;
     background-color: whitesmoke;
     margin: 10px;
     padding: 10px;
@@ -36,20 +39,31 @@ body, html {
     border: 1px solid black;
 }
 
-.middle {
+.tasks {
+    display: flex;
+    flex-direction: column;
     flex: 3;
     background-color: slategray;
 }
 
 .task {
+    text-align: center;
     background-color: whitesmoke;
     margin: 10px;
     padding: 10px;
     border-radius: 5px;
     border: 1px solid black;
+    height: 50px;
+    transition: 0.1s;
+}
+
+.task:hover {
+    height: 100px;
 }
 
 .right {
+    display: flex;
+    flex-direction: column;
     flex: 2;
     background-color: lightslategrey;
 }
