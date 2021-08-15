@@ -2,29 +2,22 @@ import './style.css';
 import './overlayStyle.css';
 import Task from './modules/Task';
 import Project from './modules/Project';
-//import UI from './modules/UI'
+import UI from './modules/UI'
 
+const projects = [];
 
-const firstProject = new Project('First', 'This is a test project');
-const secondProject = new Project('Second', 'This is a test project');
+projects.push(new Project('Inbox', 'This is the inbox which contains all your tasks'));
+projects.push(new Project('First', 'This is a test project'));
+projects.push(new Project('Second', 'This is a test project'));
 
-const projects = [firstProject, secondProject];
+projects[0].addTask(new Task('task 1', 'This is the description of the first task'));
+projects[0].addTask(new Task('task 2', 'task 2 description'));
+projects[0].addTask(new Task('task 3', 'task 3 description'));
 
-const task1 = new Task('task 1', 'This is the description of the first task');
-const task2 = new Task('task 2', 'task 2 description');
-const task3 = new Task('task 3', 'task 3 description');
-firstProject.addTask(task1);
-firstProject.addTask(task2);
-firstProject.addTask(task3);
+projects[1].addTask(new Task('task 4', 'This is the description of the first task'));
+projects[1].addTask(new Task('task 5', 'task 5 description'));
 
-const task4 = new Task('task 4', 'This is the description of the first task');
-const task5 = new Task('task 5', 'task 5 description');
-const task6 = new Task('task 6', 'task 6 description');
-secondProject.addTask(task4);
-secondProject.addTask(task5);
-secondProject.addTask(task6);
-
-var currentProject = secondProject;
+var currentProject = projects[0];
 
 function renderProjects(projects, currentProject) {
   const projectsDiv = document.createElement('div');
@@ -46,7 +39,7 @@ function renderProjects(projects, currentProject) {
 
     projectDiv.addEventListener('click', () => {
       currentProject = project;
-      document.body.replaceChild(renderInit(projects, currentProject), document.body.childNodes[2]);
+      refresh(projects, currentProject);
     });
     projectsDiv.appendChild(projectDiv);
   });
@@ -59,13 +52,13 @@ function renderProjects(projects, currentProject) {
       //overlayOn();
       projects.push(new Project('New', 'This is a test project'));
 
-      document.body.replaceChild(renderInit(projects, currentProject), document.body.childNodes[2]);
+      refresh(projects, currentProject);
   });
   projectsDiv.appendChild(addProjectBtn);
   return projectsDiv;
 }
 
-function renderTasks(currentProject) {
+function renderTasks(projects, currentProject) {
   const tasksDiv = document.createElement('div');
   tasksDiv.classList.add('tasks');
 
@@ -73,17 +66,28 @@ function renderTasks(currentProject) {
   title.textContent = 'Tasks'
   tasksDiv.appendChild(title)
 
-  currentProject.tasks.forEach(task => {
+  currentProject.projectTasks.forEach(task => {
     const taskDiv = document.createElement('div');
     taskDiv.classList.add('task');
-    taskDiv.textContent = `${task.title} ${task.project.title}`;
+    taskDiv.textContent = `${task.title} ${task.project}`;
 
-    taskDiv.addEventListener('mouseenter', () => {
-      taskDiv.innerHTML= `${task.title}<br>${task.description}`;
+/*     taskDiv.addEventListener('mouseenter', () => {
+      taskDiv.textContent= `${task.title}<br>${task.description}`;
     });
     taskDiv.addEventListener('mouseleave', () => {
-      taskDiv.innerHTML= `${task.title} ${task.project.title}`;
+      taskDiv.innerHTML= `${task.title} ${task.project}`;
+    }); */
+
+
+
+    const delButton = document.createElement('button');
+    delButton.classList.add('delBtn');
+    delButton.textContent = "X";
+    delButton.addEventListener('click', () => {
+      currentProject.delTask(task);
+      refresh(projects, currentProject);
     });
+    taskDiv.appendChild(delButton);
 
     tasksDiv.appendChild(taskDiv);
   })
@@ -94,7 +98,7 @@ function renderTasks(currentProject) {
   
   addTaskBtn.addEventListener('click', () => {
     currentProject.addTask(new Task('title', 'description', currentProject, 'normal'));
-    document.body.replaceChild(renderInit(projects, currentProject), document.body.childNodes[2]);
+    refresh(projects, currentProject);
   })
   tasksDiv.appendChild(addTaskBtn);
   return tasksDiv;
@@ -169,8 +173,14 @@ function overlayOff() {
   document.querySelector('.project-overlay').style.display = 'none';
 }
 
+function refresh(projects, currentProject) {
+  const oldMainDiv = document.body.childNodes[2]
+  const newMainDiv = renderInit(projects, currentProject)
+  document.body.replaceChild(newMainDiv, oldMainDiv)
+}
+
 function renderInit(projects, currentProject) {
-    const div = document.createElement('div');
+    const mainDiv = document.createElement('div');
 
     //Define header middle and footer
     const header = document.createElement('header');
@@ -185,15 +195,15 @@ function renderInit(projects, currentProject) {
     footer.innerHTML = 'Made by Michael Tanguy <a href="https://github.com/MiKhai37" target="_blank">Github</a>';
     
     flexContainer.appendChild(renderProjects(projects, currentProject));
-    flexContainer.appendChild(renderTasks(currentProject));
+    flexContainer.appendChild(renderTasks(projects, currentProject));
     flexContainer.appendChild(renderTimers());
 
-    div.appendChild(header);
-    div.appendChild(flexContainer);
-    div.appendChild(footer);
+    mainDiv.appendChild(header);
+    mainDiv.appendChild(flexContainer);
+    mainDiv.appendChild(footer);
     
     //element.appendChild(renderOverlayProject())
-    return div;
+    return mainDiv;
   }
 
   document.body.appendChild(renderInit(projects, currentProject));
