@@ -5,11 +5,9 @@ import Project from './modules/Project';
 import UI from './modules/UI'
 
 
-const allProject = new Project('All Tasks', 'This is the default project, it contains all the tasks');
 const firstProject = new Project('First', 'This is a test project');
-const secondProject = new Project('Second', 'This is a test project');
 
-const projectsArr = [allProject, firstProject, secondProject];
+const projectsArr = [firstProject];
 
 const task1 = new Task('task 1', 'This is the description of the first task');
 const task2 = new Task('task 2', 'task 2 description');
@@ -17,58 +15,92 @@ const task3 = new Task('task 3', 'task 3 description');
 firstProject.addTask(task1);
 firstProject.addTask(task2);
 firstProject.addTask(task3);
-allProject.addTask(task1);
-allProject.addTask(task2);
-allProject.addTask(task3);
-
-const task4 = new Task('task 4', 'task 4 description');
-const task5 = new Task('task 5', 'task 5 description');
-secondProject.addTask(task4);
-secondProject.addTask(task5);
-allProject.addTask(task4);
-allProject.addTask(task5);
-
-let currentProject = allProject;
 
 
+let currentProject = firstProject;
 
-function renderProjects(projectList, container) {
-  container.innerHTML = ""
-  
-  const projectsTitle = document.createElement('div');
-  projectsTitle.classList.add('title');
-  projectsTitle.textContent = 'Projects';
-  container.appendChild(projectsTitle);
-  
-  projectList.forEach(project => {
-    const divProject = document.createElement('div');
-    divProject.classList.add('project');
-    divProject.textContent = project.title;
+function renderDivProjects(projects, currentProject) {
+  const projectsDiv = document.createElement('div');
+  projectsDiv.classList.add('projects');
 
+  const title = document.createElement('h2');
+  title.textContent = 'Projects';
+  projectsDiv.appendChild(title);
+
+  projects.forEach(project => {
+    const projectDiv = document.createElement('div');
+    projectDiv.classList.add('project');
+    projectDiv.textContent = project.title
+
+    // Highlight the current project
     if (project == currentProject) {
-      divProject.style.backgroundColor = 'grey'
-    }
+      projectDiv.style.backgroundColor = 'grey'
+    };
 
-    divProject.addEventListener('click', (e) => {
+    projectDiv.addEventListener('click', (e) => {
       console.log(e);
-
       currentProject = project;
-      renderProjects(projectList, container);
-      renderTasks(currentProject, document.querySelector('.tasks'));
+      console.log(currentProject.title);
+      document.body.replaceChild(renderInit(), document.body.childNodes[2]);
     });
-
-    container.appendChild(divProject);
+    projectsDiv.appendChild(projectDiv);
   });
   const addProjectBtn = document.createElement('button');
-  addProjectBtn.classList.add('task');
-  addProjectBtn.textContent = '+';
-  container.appendChild(addProjectBtn);
-  addProjectBtn.addEventListener('click', (e) => {
-    overlayOn()
-  })
+    addProjectBtn.classList.add('project');
+    addProjectBtn.textContent = '+';
+    addProjectBtn.addEventListener('click', (e) => {
+      console.log(e)
+      overlayOn();
+      projects.push(new Project('New', 'This is a test project'));
+      document.body.replaceChild(renderInit(), document.body.childNodes[2]);
+  });
+  projectsDiv.appendChild(addProjectBtn);
+  return projectsDiv;
 }
 
-function divOverlayProject() {
+function renderDivTasks(project) {
+  const tasksDiv = document.createElement('div');
+  tasksDiv.classList.add('tasks');
+
+  const title = document.createElement('h2');
+  title.textContent = 'Tasks'
+  tasksDiv.appendChild(title)
+
+  project.tasks.forEach(task => {
+    const taskDiv = document.createElement('div');
+    taskDiv.classList.add('task');
+    taskDiv.textContent = `${task.title} ${task.project.title}`;
+
+    taskDiv.addEventListener('mouseenter', () => {
+      taskDiv.innerHTML= `${task.title}<br>${task.description}`;
+    });
+    taskDiv.addEventListener('mouseleave', () => {
+      taskDiv.innerHTML= `${task.title} ${task.project.title}`;
+    });
+
+    tasksDiv.appendChild(taskDiv);
+  })
+  
+  const addTaskBtn = document.createElement('button');
+  addTaskBtn.classList.add('task');
+  addTaskBtn.textContent = '+';
+  
+  
+
+  addTaskBtn.addEventListener('click', (e) => {
+    console.log(e);
+    project.addTask(new Task('title', 'description', project, 'normal'));
+    console.log(project);
+    
+    
+
+    document.body.replaceChild(renderInit(), document.body.childNodes[2]);
+  })
+  tasksDiv.appendChild(addTaskBtn);
+  return tasksDiv;
+}
+
+function renderOverlayProject() {
   const overlay = document.createElement('div');
   overlay.classList.add('project-overlay');
 
@@ -111,7 +143,7 @@ function divOverlayProject() {
     const title = document.querySelector('.title-input').value;
     const description = document.querySelector('.description-input').value;
     projectsArr.push(new Project(title, description));
-    renderProjects(projectsArr,document.querySelector('.projects'));
+    renderDivProjects(projectsArr, currentProject)
     overlayOff();
   })
 
@@ -130,70 +162,20 @@ function addProject(projectList) {
   projectList.push(new Project('New Project', 'some todos'))
 }
 
-function renderTasks(project, container) {
-  container.innerHTML = ""
-
-  const todosTitle = document.createElement('div');
-  todosTitle.classList.add('title');
-  todosTitle.textContent = "Tasks";
-  container.appendChild(todosTitle);
-
-  project.tasks.forEach(task => {
-    const divTask = document.createElement('div');
-    divTask.classList.add('task')
-    divTask.textContent = `${task.title} ${task.project}`;
-
-    divTask.addEventListener('mouseenter', (e) => {
-      divTask.innerHTML= `${task.title}<br>${task.description}`;
-    });
-    divTask.addEventListener('mouseleave', (e) => {
-      divTask.textContent = `${task.title} ${task.project}`;
-    });
-
-    container.appendChild(divTask);
-  })
-  const addTaskBtn = document.createElement('button');
-  addTaskBtn.classList.add('task');
-  addTaskBtn.textContent = '+';
-  container.appendChild(addTaskBtn);
-  addTaskBtn.addEventListener('click', () => {
-    addTask('new task', 'description of the new task');
-    renderTasks(project, container);
-  })
-}
-
-function addTask(title, description) {
-  const task = new Task(title, description, currentProject.title);
-  currentProject.addTask(task);
-  if (currentProject.title != 'All Tasks') {
-    allProject.addTask(task);
-  }
-}
-
-function initRender() {
+function renderInit() {
     const element = document.createElement('div');
 
     //Define header middle and footer
     const header = document.createElement('header');
     header.classList.add('top-nav');
-    header.textContent = 'ToDo App';
+    header.textContent = 'Project Manager';
 
-    const middle = document.createElement('div');
-    middle.classList.add('flex-container');
+    const flexContainer = document.createElement('div');
+    flexContainer.classList.add('flex-container');
 
     const footer = document.createElement('footer');
     footer.classList.add('bottom-nav');
-    footer.textContent = 'Made by Michael Tanguy';
-
-    //Projects
-    const projects = document.createElement('div');
-    projects.classList.add('projects');
-    renderProjects(projectsArr, projects)
-
-    // Todos
-    const todos = document.createElement('div');
-    todos.classList.add('tasks');
-    renderTasks(currentProject, todos);
+    footer.innerHTML = 'Made by Michael Tanguy <a href="https://github.com/MiKhai37" target="_blank">Github</a>';
 
     const timers = document.createElement('div');
     timers.classList.add('timers');
@@ -201,21 +183,18 @@ function initRender() {
     timersTitle.classList.add('title');
     timersTitle.textContent = 'Timers'
     timers.appendChild(timersTitle)
-
-
-
-    middle.appendChild(projects);
-    middle.appendChild(todos);
-    middle.appendChild(timers);
     
+    flexContainer.appendChild(renderDivProjects(projectsArr, currentProject));
+    flexContainer.appendChild(renderDivTasks(currentProject));
+    flexContainer.appendChild(timers);
 
     element.appendChild(header);
-    element.appendChild(middle);
+    element.appendChild(flexContainer);
     element.appendChild(footer);
     
-    element.appendChild(divOverlayProject())
-    //element.innerHTML = "<h1>ToDo App</h1>"
+    element.appendChild(renderOverlayProject())
+
     return element;
   }
-  
-  document.body.appendChild(initRender());
+
+  document.body.appendChild(renderInit());

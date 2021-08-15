@@ -1,14 +1,12 @@
 export default class Project {
-    constructor(title, description = '') {
+    constructor(title, description = '', main = false) {
         this.title = title;
         this.description = description;
+        this.main = main;
         this.tasks = [];
     }
     addTask(Task) {
         this.tasks.push(Task);
-        if (this.title != "All Tasks") {
-        Task.project = this.title;
-        }
     }
     delTask(Task) {
 
