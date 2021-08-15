@@ -34,6 +34,7 @@ a:hover{
 }
 
 .projects {
+    text-align: center;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -50,6 +51,7 @@ a:hover{
 }
 
 .tasks {
+    text-align: center;
     display: flex;
     flex-direction: column;
     flex: 3;

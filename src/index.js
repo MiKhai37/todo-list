@@ -2,12 +2,13 @@ import './style.css';
 import './overlayStyle.css';
 import Task from './modules/Task';
 import Project from './modules/Project';
-import UI from './modules/UI'
+//import UI from './modules/UI'
 
 
 const firstProject = new Project('First', 'This is a test project');
+const secondProject = new Project('Second', 'This is a test project');
 
-const projectsArr = [firstProject];
+const projects = [firstProject, secondProject];
 
 const task1 = new Task('task 1', 'This is the description of the first task');
 const task2 = new Task('task 2', 'task 2 description');
@@ -16,8 +17,14 @@ firstProject.addTask(task1);
 firstProject.addTask(task2);
 firstProject.addTask(task3);
 
+const task4 = new Task('task 4', 'This is the description of the first task');
+const task5 = new Task('task 5', 'task 5 description');
+const task6 = new Task('task 6', 'task 6 description');
+secondProject.addTask(task4);
+secondProject.addTask(task5);
+secondProject.addTask(task6);
 
-let currentProject = firstProject;
+var currentProject = secondProject;
 
 function renderDivProjects(projects, currentProject) {
   const projectsDiv = document.createElement('div');
@@ -30,28 +37,30 @@ function renderDivProjects(projects, currentProject) {
   projects.forEach(project => {
     const projectDiv = document.createElement('div');
     projectDiv.classList.add('project');
-    projectDiv.textContent = project.title
+    projectDiv.textContent = project.title;
 
     // Highlight the current project
     if (project == currentProject) {
-      projectDiv.style.backgroundColor = 'grey'
+      projectDiv.style.backgroundColor = 'grey';
     };
 
-    projectDiv.addEventListener('click', (e) => {
-      console.log(e);
+    projectDiv.addEventListener('click', () => {
       currentProject = project;
-      console.log(currentProject.title);
+      console.log(currentProject)
+      console.log(project)
       document.body.replaceChild(renderInit(), document.body.childNodes[2]);
     });
     projectsDiv.appendChild(projectDiv);
   });
+
   const addProjectBtn = document.createElement('button');
     addProjectBtn.classList.add('project');
     addProjectBtn.textContent = '+';
     addProjectBtn.addEventListener('click', (e) => {
       console.log(e)
-      overlayOn();
+      //overlayOn();
       projects.push(new Project('New', 'This is a test project'));
+
       document.body.replaceChild(renderInit(), document.body.childNodes[2]);
   });
   projectsDiv.appendChild(addProjectBtn);
@@ -85,14 +94,10 @@ function renderDivTasks(project) {
   addTaskBtn.classList.add('task');
   addTaskBtn.textContent = '+';
   
-  
-
   addTaskBtn.addEventListener('click', (e) => {
     console.log(e);
     project.addTask(new Task('title', 'description', project, 'normal'));
     console.log(project);
-    
-    
 
     document.body.replaceChild(renderInit(), document.body.childNodes[2]);
   })
@@ -142,8 +147,8 @@ function renderOverlayProject() {
   addBtn.addEventListener('click', (e) => {
     const title = document.querySelector('.title-input').value;
     const description = document.querySelector('.description-input').value;
-    projectsArr.push(new Project(title, description));
-    renderDivProjects(projectsArr, currentProject)
+    projects.push(new Project(title, description));
+    renderDivProjects(projects, currentProject)
     overlayOff();
   })
 
@@ -156,10 +161,6 @@ function overlayOn() {
 
 function overlayOff() {
   document.querySelector('.project-overlay').style.display = 'none';
-}
-
-function addProject(projectList) {
-  projectList.push(new Project('New Project', 'some todos'))
 }
 
 function renderInit() {
@@ -184,7 +185,7 @@ function renderInit() {
     timersTitle.textContent = 'Timers'
     timers.appendChild(timersTitle)
     
-    flexContainer.appendChild(renderDivProjects(projectsArr, currentProject));
+    flexContainer.appendChild(renderDivProjects(projects, currentProject));
     flexContainer.appendChild(renderDivTasks(currentProject));
     flexContainer.appendChild(timers);
 
@@ -192,8 +193,7 @@ function renderInit() {
     element.appendChild(flexContainer);
     element.appendChild(footer);
     
-    element.appendChild(renderOverlayProject())
-
+    //element.appendChild(renderOverlayProject())
     return element;
   }
 

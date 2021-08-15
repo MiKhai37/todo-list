@@ -46,7 +46,7 @@ export default class UI {
         element.appendChild(footer);
         
         element.appendChild(divOverlayProject())
-        //element.innerHTML = "<h1>ToDo App</h1>"
+        
         return element;
       }
 
