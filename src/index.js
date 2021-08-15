@@ -26,7 +26,7 @@ secondProject.addTask(task6);
 
 var currentProject = secondProject;
 
-function renderDivProjects(projects, currentProject) {
+function renderProjects(projects, currentProject) {
   const projectsDiv = document.createElement('div');
   projectsDiv.classList.add('projects');
 
@@ -46,9 +46,7 @@ function renderDivProjects(projects, currentProject) {
 
     projectDiv.addEventListener('click', () => {
       currentProject = project;
-      console.log(currentProject)
-      console.log(project)
-      document.body.replaceChild(renderInit(), document.body.childNodes[2]);
+      document.body.replaceChild(renderInit(projects, currentProject), document.body.childNodes[2]);
     });
     projectsDiv.appendChild(projectDiv);
   });
@@ -61,13 +59,13 @@ function renderDivProjects(projects, currentProject) {
       //overlayOn();
       projects.push(new Project('New', 'This is a test project'));
 
-      document.body.replaceChild(renderInit(), document.body.childNodes[2]);
+      document.body.replaceChild(renderInit(projects, currentProject), document.body.childNodes[2]);
   });
   projectsDiv.appendChild(addProjectBtn);
   return projectsDiv;
 }
 
-function renderDivTasks(project) {
+function renderTasks(currentProject) {
   const tasksDiv = document.createElement('div');
   tasksDiv.classList.add('tasks');
 
@@ -75,7 +73,7 @@ function renderDivTasks(project) {
   title.textContent = 'Tasks'
   tasksDiv.appendChild(title)
 
-  project.tasks.forEach(task => {
+  currentProject.tasks.forEach(task => {
     const taskDiv = document.createElement('div');
     taskDiv.classList.add('task');
     taskDiv.textContent = `${task.title} ${task.project.title}`;
@@ -94,15 +92,23 @@ function renderDivTasks(project) {
   addTaskBtn.classList.add('task');
   addTaskBtn.textContent = '+';
   
-  addTaskBtn.addEventListener('click', (e) => {
-    console.log(e);
-    project.addTask(new Task('title', 'description', project, 'normal'));
-    console.log(project);
-
-    document.body.replaceChild(renderInit(), document.body.childNodes[2]);
+  addTaskBtn.addEventListener('click', () => {
+    currentProject.addTask(new Task('title', 'description', currentProject, 'normal'));
+    document.body.replaceChild(renderInit(projects, currentProject), document.body.childNodes[2]);
   })
   tasksDiv.appendChild(addTaskBtn);
   return tasksDiv;
+}
+
+function renderTimers() {
+  const timersDiv = document.createElement('div');
+  timersDiv.classList.add('timers')
+
+  const title = document.createElement('h2');
+  title.textContent = "Timers";
+  timersDiv.appendChild(title);
+
+  return timersDiv;
 }
 
 function renderOverlayProject() {
@@ -148,7 +154,7 @@ function renderOverlayProject() {
     const title = document.querySelector('.title-input').value;
     const description = document.querySelector('.description-input').value;
     projects.push(new Project(title, description));
-    renderDivProjects(projects, currentProject)
+    renderProjects(projects, currentProject)
     overlayOff();
   })
 
@@ -163,8 +169,8 @@ function overlayOff() {
   document.querySelector('.project-overlay').style.display = 'none';
 }
 
-function renderInit() {
-    const element = document.createElement('div');
+function renderInit(projects, currentProject) {
+    const div = document.createElement('div');
 
     //Define header middle and footer
     const header = document.createElement('header');
@@ -177,24 +183,17 @@ function renderInit() {
     const footer = document.createElement('footer');
     footer.classList.add('bottom-nav');
     footer.innerHTML = 'Made by Michael Tanguy <a href="https://github.com/MiKhai37" target="_blank">Github</a>';
-
-    const timers = document.createElement('div');
-    timers.classList.add('timers');
-    const timersTitle = document.createElement('div');
-    timersTitle.classList.add('title');
-    timersTitle.textContent = 'Timers'
-    timers.appendChild(timersTitle)
     
-    flexContainer.appendChild(renderDivProjects(projects, currentProject));
-    flexContainer.appendChild(renderDivTasks(currentProject));
-    flexContainer.appendChild(timers);
+    flexContainer.appendChild(renderProjects(projects, currentProject));
+    flexContainer.appendChild(renderTasks(currentProject));
+    flexContainer.appendChild(renderTimers());
 
-    element.appendChild(header);
-    element.appendChild(flexContainer);
-    element.appendChild(footer);
+    div.appendChild(header);
+    div.appendChild(flexContainer);
+    div.appendChild(footer);
     
     //element.appendChild(renderOverlayProject())
-    return element;
+    return div;
   }
 
-  document.body.appendChild(renderInit());
+  document.body.appendChild(renderInit(projects, currentProject));
