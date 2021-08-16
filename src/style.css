@@ -38,6 +38,7 @@ a {
 }
 
 .project {
+    position: relative;
     text-align: center;
     background-color: whitesmoke;
     margin: 10px;
@@ -66,13 +67,46 @@ a {
 
 .delBtn {
     position: absolute;
-    right: 0;
-    top: 0;
+    right: 5px;
+    top: 5px;
+    background-color: whitesmoke;
     transition: 0.3s;
+    border: 0;
 }
 
 .delBtn:hover {
-    transform: rotate(45deg);
+    transform-origin: center;
+    transform: scale(1.2);
+}
+
+.input {
+    margin: 5px;
+}
+
+.addTaskBtn {
+    position: relative;
+    left: 10px;
+    background-color: whitesmoke;
+    transition: 0.3s;
+    border: 0;
+}
+
+.addTaskBtn:hover {
+    transform-origin: center;
+    transform: scale(1.2);
+}
+
+.addProjectBtn {
+    position: relative;
+    top: 5px;
+    background-color: whitesmoke;
+    transition: 0.3s;
+    border: 0;
+}
+
+.addProjectBtn:hover {
+    transform-origin: center;
+    transform: scale(1.2);
 }
 
 .timers {

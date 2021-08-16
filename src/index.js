@@ -9,22 +9,20 @@ const storage = new Storage();
 const projects = [];
 
 if (localStorage.length == 0) {
-  console.log('Nothing stored, creation of inbox')
-
-  projects.push(new Project('Inbox', 'This is the inbox which contains all your tasks'));
+  projects.push(new Project('First Project', 'This is the first project'));
   projects[0].addTask(new Task('task', 'first task')); 
 } else  {
-  console.log("Something is stored");
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
     const obj = JSON.parse(localStorage.getItem(key));
+
     // Re-add Project Prototype
-    Object.setPrototypeOf(obj,Project.prototype)
-    console.log(obj)
+    Object.setPrototypeOf(obj,Project.prototype);
+  
     projects.push(obj);
   }
 }
-storage.storeData(projects);
+
 
 const currentProject = projects[0];
 
@@ -53,71 +51,108 @@ function renderProjects(projects, currentProject) {
     projectsDiv.appendChild(projectDiv);
   });
 
+  // The add project button
+  const addProjectDiv = document.createElement('div');
+  addProjectDiv.classList.add('project');
+
+  const titleInput = document.createElement('input');
+  titleInput.classList.add('input') ;
+  titleInput.placeholder = 'Project Name';
+  addProjectDiv.appendChild(titleInput);
+
+  const descInput = document.createElement('input');
+  descInput.classList.add('input') ;
+  descInput.placeholder = "Project Description";
+  addProjectDiv.appendChild(descInput);
+
   const addProjectBtn = document.createElement('button');
-    addProjectBtn.classList.add('project');
-    addProjectBtn.textContent = '+';
-    addProjectBtn.addEventListener('click', () => {
-      //overlayOn();
-      projects.push(new Project('New', 'This is a test project'));
-      storage.storeData(projects);
-      refresh(projects, currentProject);
+  addProjectBtn.classList.add('addProjectBtn');
+  addProjectBtn.innerHTML = '<i class="fas fa-folder-plus"></i>';
+
+  addProjectBtn.addEventListener('click', () => {
+    const title = titleInput.value;
+    const desc = descInput.value;
+    //overlayOn();
+    projects.push(new Project(title, desc));
+    storage.storeData(projects);
+    refresh(projects, currentProject);
   });
-  projectsDiv.appendChild(addProjectBtn);
+
+  addProjectDiv.appendChild(addProjectBtn);
+  projectsDiv.appendChild(addProjectDiv);
   return projectsDiv;
 }
 
 function renderTasks(projects, currentProject) {
+  // Div
   const tasksDiv = document.createElement('div');
   tasksDiv.classList.add('tasks');
 
+  // Task Title
   const title = document.createElement('h2');
-  title.textContent = 'Tasks'
-  tasksDiv.appendChild(title)
+  title.textContent = 'Tasks';
+  tasksDiv.appendChild(title);
 
+  // Add all task of the current project
   currentProject.projectTasks.forEach(task => {
+    // The task
     const taskDiv = document.createElement('div');
     taskDiv.classList.add('task');
-    taskDiv.textContent = `${task.title} ${task.project}`;
+    taskDiv.textContent = `${task.title}`;
 
+    // The delete button
     const delButton = document.createElement('button');
     delButton.classList.add('delBtn');
-    delButton.textContent = "X";
+    delButton.innerHTML = '<i class="fas fa-times"></i>';
     delButton.addEventListener('click', () => {
       currentProject.delTask(task);
-      storage.storeData(projects)
+      storage.storeData(projects);
       refresh(projects, currentProject);
     });
 
+    // Event listener to switch between normal and detailed task
     taskDiv.addEventListener('click', () => {
       if (!taskDiv.classList.contains('open')) {
         taskDiv.classList.add('open');
-        taskDiv.textContent = `${task.title} ${task.description}`;
-        taskDiv.appendChild(delButton);
+        taskDiv.innerHTML = `${task.title}<br>${task.description}`;
       } else {
         taskDiv.classList.remove('open');
-        taskDiv.textContent = `${task.title} ${task.project}`;
-        taskDiv.appendChild(delButton);
+        taskDiv.innerHTML = `${task.title}`;
       };
+      taskDiv.appendChild(delButton);
     });
     taskDiv.appendChild(delButton);
     tasksDiv.appendChild(taskDiv);
   })
   
-  const addTaskBtn = document.createElement('button');
-  const projectTitleInput = document.createElement('input')
-  projectTitleInput.type = 'text';
-  projectTitleInput.placeholder = 'red';
-  addTaskBtn.appendChild(projectTitleInput);
+  // The add task button
+  const addTaskDiv = document.createElement('div');
+  addTaskDiv.classList.add('task');
 
-  addTaskBtn.classList.add('task');
-  addTaskBtn.textContent = '+';
-  
+  const titleInput = document.createElement('input');
+  titleInput.classList.add('input') ;
+  titleInput.placeholder = 'Task Name';
+  addTaskDiv.appendChild(titleInput);
+
+  const descInput = document.createElement('input');
+  descInput.classList.add('input');
+  descInput.placeholder = "Task Description";
+  addTaskDiv.appendChild(descInput);
+
+  const addTaskBtn = document.createElement('button');
+  addTaskBtn.classList.add('addTaskBtn');
+  addTaskBtn.innerHTML = '<i class="fas fa-plus"></i>';
+
   addTaskBtn.addEventListener('click', () => {
-    currentProject.addTask(new Task('title', 'description', currentProject, 'normal'));
+    const title = titleInput.value;
+    const desc = descInput.value;
+    currentProject.addTask(new Task(title, desc, currentProject, 'normal'));
     storage.storeData(projects);
     refresh(projects, currentProject);
-  })
-  tasksDiv.appendChild(addTaskBtn);
+  });
+
+  addTaskDiv.appendChild(addTaskBtn);
+  tasksDiv.appendChild(addTaskDiv);
   return tasksDiv;
 }
 
