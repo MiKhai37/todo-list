@@ -2,22 +2,31 @@ import './style.css';
 import './overlayStyle.css';
 import Task from './modules/Task';
 import Project from './modules/Project';
+import Storage from './modules/Storage';
 import UI from './modules/UI'
 
+const storage = new Storage();
 const projects = [];
 
-projects.push(new Project('Inbox', 'This is the inbox which contains all your tasks'));
-projects.push(new Project('First', 'This is a test project'));
-projects.push(new Project('Second', 'This is a test project'));
+if (localStorage.length == 0) {
+  console.log('Nothing stored, creation of inbox')
 
-projects[0].addTask(new Task('task 1', 'This is the description of the first task'));
-projects[0].addTask(new Task('task 2', 'task 2 description'));
-projects[0].addTask(new Task('task 3', 'task 3 description'));
+  projects.push(new Project('Inbox', 'This is the inbox which contains all your tasks'));
+  projects[0].addTask(new Task('task', 'first task')); 
+} else  {
+  console.log("Something is stored");
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    const obj = JSON.parse(localStorage.getItem(key));
+    // Re-add Project Prototype
+    Object.setPrototypeOf(obj,Project.prototype)
+    console.log(obj)
+    projects.push(obj);
+  }
+}
+storage.storeData(projects);
 
-projects[1].addTask(new Task('task 4', 'This is the description of the first task'));
-projects[1].addTask(new Task('task 5', 'task 5 description'));
-
-var currentProject = projects[0];
+const currentProject = projects[0];
 
 function renderProjects(projects, currentProject) {
   const projectsDiv = document.createElement('div');
@@ -47,11 +56,10 @@ function renderProjects(projects, currentProject) {
   const addProjectBtn = document.createElement('button');
     addProjectBtn.classList.add('project');
     addProjectBtn.textContent = '+';
-    addProjectBtn.addEventListener('click', (e) => {
-      console.log(e)
+    addProjectBtn.addEventListener('click', () => {
       //overlayOn();
       projects.push(new Project('New', 'This is a test project'));
-
+      storage.storeData(projects);
       refresh(projects, currentProject);
   });
   projectsDiv.appendChild(addProjectBtn);
@@ -71,33 +79,42 @@ function renderTasks(projects, currentProject) {
     taskDiv.classList.add('task');
     taskDiv.textContent = `${task.title} ${task.project}`;
 
-/*     taskDiv.addEventListener('mouseenter', () => {
-      taskDiv.textContent= `${task.title}<br>${task.description}`;
-    });
-    taskDiv.addEventListener('mouseleave', () => {
-      taskDiv.innerHTML= `${task.title} ${task.project}`;
-    }); */
-
-
-
     const delButton = document.createElement('button');
     delButton.classList.add('delBtn');
     delButton.textContent = "X";
     delButton.addEventListener('click', () => {
       currentProject.delTask(task);
+      storage.storeData(projects)
       refresh(projects, currentProject);
     });
-    taskDiv.appendChild(delButton);
 
+    taskDiv.addEventListener('click', () => {
+      if (!taskDiv.classList.contains('open')) {
+        taskDiv.classList.add('open');
+        taskDiv.textContent = `${task.title} ${task.description}`;
+        taskDiv.appendChild(delButton);
+      } else {
+        taskDiv.classList.remove('open');
+        taskDiv.textContent = `${task.title} ${task.project}`;
+        taskDiv.appendChild(delButton);
+      };
+    });
+    taskDiv.appendChild(delButton);
     tasksDiv.appendChild(taskDiv);
   })
   
   const addTaskBtn = document.createElement('button');
+  const projectTitleInput = document.createElement('input')
+  projectTitleInput.type = 'text';
+  projectTitleInput.placeholder = 'red';
+  addTaskBtn.appendChild(projectTitleInput);
+
   addTaskBtn.classList.add('task');
   addTaskBtn.textContent = '+';
   
   addTaskBtn.addEventListener('click', () => {
     currentProject.addTask(new Task('title', 'description', currentProject, 'normal'));
+    storage.storeData(projects);
     refresh(projects, currentProject);
   })
   tasksDiv.appendChild(addTaskBtn);

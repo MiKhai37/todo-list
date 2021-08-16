@@ -81,7 +81,9 @@ a {
     flex-direction: column;
     flex: 2;
     background-color: lightslategrey;
+    transition: 1s;
 }
+
 
 .bottom-nav {
     background-color: #555;
