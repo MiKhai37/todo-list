@@ -114,6 +114,19 @@ function renderTasks(projects, currentProject) {
     taskDiv.classList.add('task');
     taskDiv.textContent = `${task.title}`;
 
+    const expendBtn = document.createElement('button');
+    expendBtn.classList.add('expendBtn');
+    expendBtn.innerHTML = '<i class="fas fa-arrow-down"></i>';
+
+    const valBtn = document.createElement('button');
+    valBtn.classList.add('valBtn');
+    valBtn.innerHTML = '<i class="fas fa-check"></i>';
+    valBtn.addEventListener('click', () => {
+      valBtn.classList.toggle('valid');
+      task.isDone = !task.isDone;
+      storage.storeData(projects);
+    })
+
     // The delete button
     const delButton = document.createElement('button');
     delButton.classList.add('delBtn');
@@ -125,15 +138,21 @@ function renderTasks(projects, currentProject) {
     });
 
     // Event listener to switch between normal and detailed task
-    taskDiv.addEventListener('click', () => {
+    expendBtn.addEventListener('click', () => {
       taskDiv.classList.toggle('open');
       if (taskDiv.classList.contains('open')) {
-        taskDiv.innerHTML = `${task.title}<br>${task.description}`;
+        taskDiv.innerHTML = `${task.title}<br>${task.description}<br>${task.deadline}`;
+        expendBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
       } else {
         taskDiv.innerHTML = `${task.title}`;
+        expendBtn.innerHTML = '<i class="fas fa-arrow-down"></i>';
       };
+      taskDiv.appendChild(valBtn);
+      taskDiv.appendChild(expendBtn);
       taskDiv.appendChild(delButton);
     });
+    taskDiv.appendChild(valBtn);
+    taskDiv.appendChild(expendBtn);
     taskDiv.appendChild(delButton);
     tasksDiv.appendChild(taskDiv);
   })
@@ -160,7 +179,7 @@ function renderTasks(projects, currentProject) {
     const title = titleInput.value;
     const desc = descInput.value;
     if (!title || !desc) return;
-    currentProject.addTask(new Task(title, desc, currentProject, 'normal'));
+    currentProject.addTask(new Task(title, desc, currentProject));
     storage.storeData(projects);
     refresh(projects, currentProject);
   });
@@ -200,7 +219,7 @@ function renderInit(projects, currentProject) {
 
     const footer = document.createElement('footer');
     footer.classList.add('bottom-nav');
-    footer.innerHTML = 'Made by Michael Tanguy <a href="https://github.com/MiKhai37" target="_blank">Github</a>';
+    footer.innerHTML = 'Made by Michael Tanguy <a href="https://github.com/MiKhai37" target="_blank"><i class="fab fa-github"></i></a>';
     
     flexContainer.appendChild(renderProjects(projects, currentProject));
     flexContainer.appendChild(renderTasks(projects, currentProject));
@@ -210,7 +229,6 @@ function renderInit(projects, currentProject) {
     mainDiv.appendChild(flexContainer);
     mainDiv.appendChild(footer);
     
-    //element.appendChild(renderOverlayProject())
     return mainDiv;
   }
 

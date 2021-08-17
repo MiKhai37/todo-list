@@ -69,6 +69,36 @@ a {
     border: 1px solid black;
 }
 
+.expendBtn {
+    margin: auto;
+    background-color: whitesmoke;
+    transition: 0.3s;
+    border: 0;
+}
+
+.expendBtn:hover {
+    transform-origin: center;
+    transform: scale(1.2);
+}
+
+.valBtn {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    background-color: whitesmoke;
+    transition: 0.3s;
+    border: 0;
+}
+
+.valBtn:hover {
+    transform-origin: center;
+    transform: scale(1.2);
+}
+
+.valid {
+    color: green;
+}
+
 .delBtn {
     position: absolute;
     right: 5px;
@@ -89,8 +119,6 @@ a {
 
 .addTaskBtn {
     margin:auto;
-    position: relative;
-    left: 10px;
     background-color: whitesmoke;
     transition: 0.3s;
     border: 0;
