@@ -9,7 +9,7 @@ const storage = new Storage();
 const projects = [];
 
 if (localStorage.length == 0) {
-  projects.push(new Project('First Project', 'This is the first project'));
+  projects.push(new Project('inbox', 'All tasks', true));
   projects[0].addTask(new Task('task', 'first task')); 
 } else  {
   for (let i = 0; i < localStorage.length; i++) {
@@ -18,11 +18,9 @@ if (localStorage.length == 0) {
 
     // Re-add Project Prototype
     Object.setPrototypeOf(obj,Project.prototype);
-  
     projects.push(obj);
   }
 }
-
 
 const currentProject = projects[0];
 
@@ -48,6 +46,22 @@ function renderProjects(projects, currentProject) {
       currentProject = project;
       refresh(projects, currentProject);
     });
+    if (!project.perm) {
+      // The delete button
+      const delButton = document.createElement('button');
+      delButton.classList.add('delBtn');
+      delButton.style.backgroundColor = projectDiv.style.backgroundColor;
+      delButton.innerHTML = '<i class="fas fa-times"></i>';
+      delButton.addEventListener('click', () => {
+        const index = projects.indexOf(project);
+        if (index > -1) projects.splice(index, 1);
+        if (project == currentProject) currentProject.projectTasks = [];
+        storage.storeData(projects);
+        refresh(projects, currentProject);
+      });
+      projectDiv.appendChild(delButton);
+    }
+
     projectsDiv.appendChild(projectDiv);
   });
 
@@ -72,7 +86,7 @@ function renderProjects(projects, currentProject) {
   addProjectBtn.addEventListener('click', () => {
     const title = titleInput.value;
     const desc = descInput.value;
-    //overlayOn();
+    if (!title || !desc) return;
     projects.push(new Project(title, desc));
     storage.storeData(projects);
     refresh(projects, currentProject);
@@ -112,11 +126,10 @@ function renderTasks(projects, currentProject) {
 
     // Event listener to switch between normal and detailed task
     taskDiv.addEventListener('click', () => {
-      if (!taskDiv.classList.contains('open')) {
-        taskDiv.classList.add('open');
+      taskDiv.classList.toggle('open');
+      if (taskDiv.classList.contains('open')) {
         taskDiv.innerHTML = `${task.title}<br>${task.description}`;
       } else {
-        taskDiv.classList.remove('open');
         taskDiv.innerHTML = `${task.title}`;
       };
       taskDiv.appendChild(delButton);
@@ -146,6 +159,7 @@ function renderTasks(projects, currentProject) {
   addTaskBtn.addEventListener('click', () => {
     const title = titleInput.value;
     const desc = descInput.value;
+    if (!title || !desc) return;
     currentProject.addTask(new Task(title, desc, currentProject, 'normal'));
     storage.storeData(projects);
     refresh(projects, currentProject);
@@ -167,68 +181,10 @@ function renderTimers() {
   return timersDiv;
 }
 
-function renderOverlayProject() {
-  const overlay = document.createElement('div');
-  overlay.classList.add('project-overlay');
-
-  const formContainer = document.createElement('div');
-  formContainer.classList.add('form-container');
-  overlay.appendChild(formContainer);
-
-  const form = document.createElement('form');
-  form.classList.add('form');
-  formContainer.appendChild(form);
-
-  const formTitle = document.createElement('h2');
-  formTitle.textContent = 'Add New Project'
-  formTitle.style.color = 'white'
-  form.appendChild(formTitle);
-
-  const inputContainer = document.createElement('div');
-  inputContainer.classList.add('input-container')
-  form.appendChild(inputContainer);
-
-  const titleInput = document.createElement('input');
-  titleInput.classList.add('title-input');
-  titleInput.type = 'text'
-  titleInput.placeholder = 'Project Name';
-  inputContainer.appendChild(titleInput);
-
-  const descriptionInput = document.createElement('input');
-  descriptionInput.classList.add('description-input');
-  descriptionInput.type = 'text'
-  descriptionInput.placeholder = 'Project Description';
-  inputContainer.appendChild(descriptionInput);
-
-  const addBtn = document.createElement('button');
-  addBtn.classList.add('button');
-  addBtn.type = 'button';
-  addBtn.textContent = "Add New Project";
-  inputContainer.appendChild(addBtn);
-
-  addBtn.addEventListener('click', (e) => {
-    const title = document.querySelector('.title-input').value;
-    const description = document.querySelector('.description-input').value;
-    projects.push(new Project(title, description));
-    renderProjects(projects, currentProject)
-    overlayOff();
-  })
-
-  return overlay;
-}
-
-function overlayOn() {
-  document.querySelector('.project-overlay').style.display = 'block';
-}
-
-function overlayOff() {
-  document.querySelector('.project-overlay').style.display = 'none';
-}
-
 function refresh(projects, currentProject) {
-  const oldMainDiv = document.body.childNodes[2]
-  const newMainDiv = renderInit(projects, currentProject)
-  document.body.replaceChild(newMainDiv, oldMainDiv)
+  const oldMainDiv = document.body.childNodes[2];
+  const newMainDiv = renderInit(projects, currentProject);
+  document.body.replaceChild(newMainDiv, oldMainDiv);
 }
 
 function renderInit(projects, currentProject) {

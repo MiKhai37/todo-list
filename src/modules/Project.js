@@ -1,8 +1,9 @@
 export default class Project {
-    constructor(title, description = 'No description') {
+    constructor(title, description = 'No description', perm = false) {
         this.title = title;
         this.description = description;
         this.projectTasks = [];
+        this.perm = perm;
     }
     addTask(task) {
         this.projectTasks.push(task);

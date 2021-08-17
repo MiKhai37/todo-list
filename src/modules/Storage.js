@@ -1,3 +1,5 @@
+import Project from './Project';
+
 export default class Storage {
     constructor() {
         // Check if storage is available
@@ -10,6 +12,7 @@ export default class Storage {
           }
     }
     storeData(projects) {
+        localStorage.clear()
         // Store all projects
         projects.forEach(project => {
             const jsonProject = JSON.stringify(project)
@@ -18,10 +21,16 @@ export default class Storage {
         });
     }
     retrieveData() {
-
+        const projects = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            const obj = JSON.parse(localStorage.getItem(key));
         
+            // Re-add Project Prototype
+            Object.setPrototypeOf(obj,Project.prototype);
+            projects.push(obj);
+        return projects;
+        }
 
-        console.log('Projects loaded')
-        return projects
     }
 }
