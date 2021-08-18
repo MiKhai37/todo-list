@@ -1,34 +1,14 @@
 import './style.css';
-import './overlayStyle.css';
-import Task from './modules/Task';
-import Project from './modules/Project';
-import Storage from './modules/Storage';
+import Task from './modules/Task.js';
+import Project from './modules/Project.js';
+import Storage from './modules/Storage.js';
 import UI from './modules/UI'
-
-const storage = new Storage();
-const projects = [];
-
-if (localStorage.length == 0) {
-  projects.push(new Project('inbox', 'All tasks', true));
-  projects[0].addTask(new Task('task', 'first task')); 
-} else  {
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    const obj = JSON.parse(localStorage.getItem(key));
-
-    // Re-add Project Prototype
-    Object.setPrototypeOf(obj,Project.prototype);
-    projects.push(obj);
-  }
-}
-
-const currentProject = projects[0];
 
 function renderProjects(projects, currentProject) {
   const projectsDiv = document.createElement('div');
   projectsDiv.classList.add('projects');
 
-  const title = document.createElement('h2');
+  const title = document.createElement('h3');
   title.textContent = 'Projects';
   projectsDiv.appendChild(title);
 
@@ -48,10 +28,8 @@ function renderProjects(projects, currentProject) {
     });
     if (!project.perm) {
       // The delete button
-      const delButton = document.createElement('button');
-      delButton.classList.add('delBtn');
+      const delButton = createBtn('delBtn', 'times');
       delButton.style.backgroundColor = projectDiv.style.backgroundColor;
-      delButton.innerHTML = '<i class="fas fa-times"></i>';
       delButton.addEventListener('click', () => {
         const index = projects.indexOf(project);
         if (index > -1) projects.splice(index, 1);
@@ -70,7 +48,7 @@ function renderProjects(projects, currentProject) {
   addProjectDiv.classList.add('project');
 
   const titleInput = document.createElement('input');
-  titleInput.classList.add('input') ;
+  titleInput.classList.add('input');
   titleInput.placeholder = 'Project Name';
   addProjectDiv.appendChild(titleInput);
 
@@ -79,10 +57,7 @@ function renderProjects(projects, currentProject) {
   descInput.placeholder = "Project Description";
   addProjectDiv.appendChild(descInput);
 
-  const addProjectBtn = document.createElement('button');
-  addProjectBtn.classList.add('addProjectBtn');
-  addProjectBtn.innerHTML = '<i class="fas fa-folder-plus"></i>';
-
+  const addProjectBtn = createBtn('addProjectBtn', 'folder-plus');
   addProjectBtn.addEventListener('click', () => {
     const title = titleInput.value;
     const desc = descInput.value;
@@ -103,7 +78,7 @@ function renderTasks(projects, currentProject) {
   tasksDiv.classList.add('tasks');
 
   // Task Title
-  const title = document.createElement('h2');
+  const title = document.createElement('h3');
   title.textContent = 'Tasks';
   tasksDiv.appendChild(title);
 
@@ -114,30 +89,21 @@ function renderTasks(projects, currentProject) {
     taskDiv.classList.add('task');
     taskDiv.textContent = `${task.title}`;
 
-    const expendBtn = document.createElement('button');
-    expendBtn.classList.add('expendBtn');
-    expendBtn.innerHTML = '<i class="fas fa-arrow-down"></i>';
 
-    const valBtn = document.createElement('button');
-    valBtn.classList.add('valBtn');
-    valBtn.innerHTML = '<i class="fas fa-check"></i>';
+    const valBtn = createBtn('valBtn', 'check');
     valBtn.addEventListener('click', () => {
       valBtn.classList.toggle('valid');
       task.isDone = !task.isDone;
       storage.storeData(projects);
     })
 
-    // The delete button
-    const delButton = document.createElement('button');
-    delButton.classList.add('delBtn');
-    delButton.innerHTML = '<i class="fas fa-times"></i>';
+    const delButton = createBtn('delBtn', 'times');
     delButton.addEventListener('click', () => {
-      currentProject.delTask(task);
-      storage.storeData(projects);
-      refresh(projects, currentProject);
+      delTask(task, projects, currentProject)
     });
 
     // Event listener to switch between normal and detailed task
+    const expendBtn = createBtn('expendBtn', 'arrow-down');
     expendBtn.addEventListener('click', () => {
       taskDiv.classList.toggle('open');
       if (taskDiv.classList.contains('open')) {
@@ -171,10 +137,7 @@ function renderTasks(projects, currentProject) {
   descInput.placeholder = "Task Description";
   addTaskDiv.appendChild(descInput);
 
-  const addTaskBtn = document.createElement('button');
-  addTaskBtn.classList.add('addTaskBtn');
-  addTaskBtn.innerHTML = '<i class="fas fa-plus"></i>';
-
+  const addTaskBtn = createBtn('addTaskBtn', 'plus')
   addTaskBtn.addEventListener('click', () => {
     const title = titleInput.value;
     const desc = descInput.value;
@@ -187,6 +150,28 @@ function renderTasks(projects, currentProject) {
   addTaskDiv.appendChild(addTaskBtn);
   tasksDiv.appendChild(addTaskDiv);
   return tasksDiv;
+}
+
+function delTask(task, projects, currentProject) {
+  currentProject.delTask(task);
+  storage.storeData(projects);
+  refresh(projects, currentProject);
+}
+
+function addTask() {
+  const title = titleInput.value;
+  const desc = descInput.value;
+  if (!title || !desc) return;
+  currentProject.addTask(new Task(title, desc, currentProject));
+  storage.storeData(projects);
+  refresh(projects, currentProject);
+}
+
+function createBtn(btnClass, icon) {
+  const btn = document.createElement('button');
+  btn.classList.add(btnClass);
+  btn.innerHTML = `<i class="fa fa-${icon}"></i>`;
+  return btn;
 }
 
 function renderTimers() {
@@ -206,21 +191,16 @@ function refresh(projects, currentProject) {
   document.body.replaceChild(newMainDiv, oldMainDiv);
 }
 
-function renderInit(projects, currentProject) {
+function renderInit(projects, currentProject, ui) {
     const mainDiv = document.createElement('div');
 
     //Define header middle and footer
-    const header = document.createElement('header');
-    header.classList.add('top-nav');
-    header.textContent = 'Project Manager';
+    const header = ui.createHeader();
+    const footer = ui.createFooter();
 
     const flexContainer = document.createElement('div');
     flexContainer.classList.add('flex-container');
 
-    const footer = document.createElement('footer');
-    footer.classList.add('bottom-nav');
-    footer.innerHTML = 'Made by Michael Tanguy <a href="https://github.com/MiKhai37" target="_blank"><i class="fab fa-github"></i></a>';
-    
     flexContainer.appendChild(renderProjects(projects, currentProject));
     flexContainer.appendChild(renderTasks(projects, currentProject));
     flexContainer.appendChild(renderTimers());
@@ -232,4 +212,25 @@ function renderInit(projects, currentProject) {
     return mainDiv;
   }
 
-  document.body.appendChild(renderInit(projects, currentProject));
+
+
+const ui = new UI();
+const storage = new Storage();
+let projects = [];
+
+if (localStorage.length == 0) {
+  projects.push(new Project('inbox', 'All tasks', true));
+  projects[0].addTask(new Task('task', 'first task')); 
+  } else  {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      const obj = JSON.parse(localStorage.getItem(key));
+      
+      // Re-add Project Prototype
+      Object.setPrototypeOf(obj,Project.prototype);
+      projects.push(obj);
+      console.log(`${key} loaded`);
+  }  
+}
+const currentProject = projects[0];
+document.body.appendChild(renderInit(projects, currentProject, ui));

@@ -109,6 +109,7 @@ a {
 }
 
 .delBtn:hover {
+    color: red;
     transform-origin: center;
     transform: scale(1.2);
 }
