@@ -22,6 +22,7 @@ export default class UI {
         flexContainer.classList.add('flex-container');
         return flexContainer;
     }
+    
     generateBtn(btnClass, icon) {
         const btn = document.createElement('button');
         btn.classList.add(btnClass);
@@ -48,6 +49,25 @@ export default class UI {
             projectsContainer.appendChild(projectDiv);
         });
 
+        const addProjectDiv = document.createElement('div');
+        addProjectDiv.classList.add('task');
+
+        const titleInput = document.createElement('input');
+        titleInput.classList.add('input');
+        titleInput.placeholder = 'New Task Name';
+        addProjectDiv.appendChild(titleInput);
+
+        const descriptionInput = document.createElement('input');
+        descriptionInput.classList.add('input');
+        descriptionInput.placeholder = 'Task Desciption';
+        addProjectDiv.appendChild(descriptionInput);
+
+        const projectAddBtn = this.generateBtn('add-btn', 'folder-plus');
+        projectAddBtn.id = 'add-project-btn';
+        addProjectDiv.appendChild(projectAddBtn)
+
+        projectsContainer.appendChild(addProjectDiv);
+
         return projectsContainer;
     }
     generateTasks(tasks) {
@@ -71,10 +91,28 @@ export default class UI {
             tasksContainer.appendChild(taskDiv);
         })
 
+        const addTaskDiv = document.createElement('div');
+        addTaskDiv.classList.add('task');
+
+        const titleInput = document.createElement('input');
+        titleInput.classList.add('input');
+        titleInput.placeholder = 'New Task Name';
+        addTaskDiv.appendChild(titleInput);
+
+        const descriptionInput = document.createElement('input');
+        descriptionInput.classList.add('input');
+        descriptionInput.placeholder = 'Task Desciption';
+        addTaskDiv.appendChild(descriptionInput);
+
+        const taskAddBtn = this.generateBtn('add-btn', 'plus');
+        taskAddBtn.id = 'add-task-btn';
+        addTaskDiv.appendChild(taskAddBtn)
+
+        tasksContainer.appendChild(addTaskDiv);
 
         return tasksContainer;
     }
-    generateTimers() {
+    generateTimers(projects) {
         const timersContainer = document.createElement('div');
         timersContainer.classList.add('timers');
 
@@ -83,5 +121,22 @@ export default class UI {
         timersContainer.appendChild(title);
 
         return timersContainer;
+    }
+    render_ui(projects, tasks) {
+        const mainDiv = document.createElement('div')
+        
+        const header = this.generateHeader();
+        const footer = this.generateFooter();
+        const flexContainer = this.generateFlexContainer();
+
+        flexContainer.appendChild(this.generateProjects(projects))
+        flexContainer.appendChild(this.generateTasks(tasks))
+        flexContainer.appendChild(this.generateTimers())
+
+        mainDiv.appendChild(header);
+        mainDiv.appendChild(flexContainer);
+        mainDiv.appendChild(footer);
+
+        return mainDiv
     }
 }

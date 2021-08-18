@@ -119,31 +119,18 @@ a {
     margin: 5px;
 }
 
-.addTaskBtn {
+.add-btn {
     margin:auto;
     background-color: whitesmoke;
     transition: 0.3s;
     border: 0;
 }
 
-.addTaskBtn:hover {
+.add-btn:hover {
     transform-origin: center;
     transform: scale(1.2);
 }
 
-.addProjectBtn {
-    margin: auto;
-    position: relative;
-    top: 5px;
-    background-color: whitesmoke;
-    transition: 0.3s;
-    border: 0;
-}
-
-.addProjectBtn:hover {
-    transform-origin: center;
-    transform: scale(1.2);
-}
 
 .timers {
     text-align: center;
