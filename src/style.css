@@ -81,7 +81,7 @@ a {
     transform: scale(1.2);
 }
 
-.valBtn {
+.check-btn {
     position: absolute;
     right: 5px;
     bottom: 5px;
@@ -90,7 +90,8 @@ a {
     border: 0;
 }
 
-.valBtn:hover {
+.check-btn:hover {
+    color:green;
     transform-origin: center;
     transform: scale(1.2);
 }
@@ -99,7 +100,7 @@ a {
     color: green;
 }
 
-.delBtn {
+.del-btn {
     position: absolute;
     right: 5px;
     top: 5px;
@@ -108,7 +109,7 @@ a {
     border: 0;
 }
 
-.delBtn:hover {
+.del-btn:hover {
     color: red;
     transform-origin: center;
     transform: scale(1.2);

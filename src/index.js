@@ -4,74 +4,6 @@ import Project from './modules/Project.js';
 import Storage from './modules/Storage.js';
 import UI from './modules/UI'
 
-function renderProjects(projects, currentProject) {
-  const projectsDiv = document.createElement('div');
-  projectsDiv.classList.add('projects');
-
-  const title = document.createElement('h3');
-  title.textContent = 'Projects';
-  projectsDiv.appendChild(title);
-
-  projects.forEach(project => {
-    const projectDiv = document.createElement('div');
-    projectDiv.classList.add('project');
-    projectDiv.textContent = project.title;
-
-    // Highlight the current project
-    if (project == currentProject) {
-      projectDiv.style.backgroundColor = 'grey';
-    };
-
-    projectDiv.addEventListener('click', () => {
-      currentProject = project;
-      refresh(projects, currentProject);
-    });
-    if (!project.perm) {
-      // The delete button
-      const delButton = createBtn('delBtn', 'times');
-      delButton.style.backgroundColor = projectDiv.style.backgroundColor;
-      delButton.addEventListener('click', () => {
-        const index = projects.indexOf(project);
-        if (index > -1) projects.splice(index, 1);
-        if (project == currentProject) currentProject.projectTasks = [];
-        storage.storeData(projects);
-        refresh(projects, currentProject);
-      });
-      projectDiv.appendChild(delButton);
-    }
-
-    projectsDiv.appendChild(projectDiv);
-  });
-
-  // The add project button
-  const addProjectDiv = document.createElement('div');
-  addProjectDiv.classList.add('project');
-
-  const titleInput = document.createElement('input');
-  titleInput.classList.add('input');
-  titleInput.placeholder = 'Project Name';
-  addProjectDiv.appendChild(titleInput);
-
-  const descInput = document.createElement('input');
-  descInput.classList.add('input') ;
-  descInput.placeholder = "Project Description";
-  addProjectDiv.appendChild(descInput);
-
-  const addProjectBtn = createBtn('addProjectBtn', 'folder-plus');
-  addProjectBtn.addEventListener('click', () => {
-    const title = titleInput.value;
-    const desc = descInput.value;
-    if (!title || !desc) return;
-    projects.push(new Project(title, desc));
-    storage.storeData(projects);
-    refresh(projects, currentProject);
-  });
-
-  addProjectDiv.appendChild(addProjectBtn);
-  projectsDiv.appendChild(addProjectDiv);
-  return projectsDiv;
-}
-
 function renderTasks(projects, currentProject) {
   // Div
   const tasksDiv = document.createElement('div');
@@ -195,15 +127,15 @@ function renderInit(projects, currentProject, ui) {
     const mainDiv = document.createElement('div');
 
     //Define header middle and footer
-    const header = ui.createHeader();
-    const footer = ui.createFooter();
+    const header = ui.generateHeader();
+    const footer = ui.generateFooter();
 
     const flexContainer = document.createElement('div');
     flexContainer.classList.add('flex-container');
 
-    flexContainer.appendChild(renderProjects(projects, currentProject));
-    flexContainer.appendChild(renderTasks(projects, currentProject));
-    flexContainer.appendChild(renderTimers());
+    flexContainer.appendChild(ui.generateProjects(projects));
+    flexContainer.appendChild(ui.generateTasks(currentProject.projectTasks));
+    flexContainer.appendChild(ui.generateTimers());
 
     mainDiv.appendChild(header);
     mainDiv.appendChild(flexContainer);

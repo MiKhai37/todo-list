@@ -3,7 +3,8 @@
 This is a project manager app
 
 Features:
-  Todo List
-  Time Management
+  Create projects
+  Append tasks to projects
+  
 
 This is project have been made as part of The Odin Project Javascript curriculum track.
