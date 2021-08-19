@@ -9,7 +9,7 @@ export default class UI {
     generateHeader() {
         const header = document.createElement('div');
         header.classList.add('top-nav');
-        header.innerHTML = `<h1>Project Mangager</h1>`;
+        header.innerHTML = `<h1>Projectdoro</h1>`;
         return header;
     }
     generateFooter() {
@@ -47,6 +47,7 @@ export default class UI {
             projectDiv.textContent = project.title;
             if (!project.perm) {
                 const deleteBtn = this.generateBtn('del-btn', 'times');
+                if (project == current) {deleteBtn.classList.toggle('current')};
                 deleteBtn.addEventListener('click', () => {
                     const index = projects.indexOf(project);
                     if (index > -1) projects.splice(index, 1);
@@ -55,7 +56,7 @@ export default class UI {
                 });
                 projectDiv.appendChild(deleteBtn);
             }
-            if (project == current) projectDiv.classList.toggle('current');
+            if (project == current) {projectDiv.classList.toggle('current')};
             projectsContainer.appendChild(projectDiv);
         });
 
@@ -65,7 +66,8 @@ export default class UI {
         const titleInput = document.createElement('input');
         titleInput.id = 'new-project-title';
         titleInput.classList.add('input');
-        titleInput.placeholder = 'New Task Name';
+        titleInput.placeholder = 'New Project Name';
+        titleInput.required = true;
         addProjectDiv.appendChild(titleInput);
 
         const descriptionInput = document.createElement('input');
@@ -77,6 +79,10 @@ export default class UI {
         const projectAddBtn = this.generateBtn('add-btn', 'folder-plus');
         projectAddBtn.id = 'add-project-btn';
         projectAddBtn.addEventListener('click', () => {
+            if (titleInput.validity.valueMissing) {
+                alert('Please enter a project name');
+                return;
+            };
             const newProject = new Project(titleInput.value, descriptionInput.value);
             projects.push(newProject);
             this.storage.storeData(projects);
@@ -153,6 +159,7 @@ export default class UI {
         titleInput.id = 'new-task-title';
         titleInput.classList.add('input');
         titleInput.placeholder = 'New Task Name';
+        titleInput.required = true;
         addTaskDiv.appendChild(titleInput);
 
         const descriptionInput = document.createElement('input');
@@ -164,6 +171,10 @@ export default class UI {
         const taskAddBtn = this.generateBtn('add-btn', 'plus');
         taskAddBtn.id = 'add-task-btn';
         taskAddBtn.addEventListener('click', () => {
+            if (titleInput.validity.valueMissing) {
+                alert('Please enter a task name');
+                return;
+            };
             current.addTask(new Task(titleInput.value, descriptionInput.value))
             this.storage.storeData(projects);
             this.refreshUI(projects, current);

@@ -13,14 +13,13 @@ if (localStorage.length == 0) {
 } else  {
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
-    const obj = JSON.parse(localStorage.getItem(key));
+    const project = JSON.parse(localStorage.getItem(key));
     
     // Re-add Project Prototype
-    Object.setPrototypeOf(obj,Project.prototype);
-    projects.push(obj);
-    console.log(`${key} loaded`);
-    obj.tasks.forEach(task => {Object.setPrototypeOf(task, Task.prototype)});
-    //projects = storage.retrieveData();
+    Object.setPrototypeOf(project,Project.prototype);
+    projects.push(project);
+    console.log(`project ${key} loaded, #tasks ${project.tasks.length}`);
+    project.tasks.forEach(task => {Object.setPrototypeOf(task, Task.prototype)});
   }  
 }
 

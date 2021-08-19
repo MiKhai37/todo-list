@@ -17,7 +17,7 @@ a {
 }
 
 .top-nav {
-    background-color: #555;
+    background-color: green;
     overflow: hidden;
     color: white;
     font-size: 25px;
@@ -45,12 +45,8 @@ a {
     background-color: whitesmoke;
     margin: 10px;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 5px 15px;
     border: 1px solid black;
-}
-
-.current {
-    background-color: red;
 }
 
 .tasks {
@@ -127,6 +123,12 @@ a {
     transform-origin: center;
     transform: scale(1.2);
 }
+
+
+.current {
+    background-color: blue;
+}
+
 
 .input {
     margin: 5px;
