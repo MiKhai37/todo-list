@@ -7,4 +7,7 @@ export default class Task {
         this.isDone = isDone;
         this.priority = priority;
     }
+    toogleIsDone() {
+        this.isDone = !this.isDone;
+    }
 };

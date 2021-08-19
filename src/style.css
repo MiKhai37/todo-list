@@ -67,16 +67,25 @@ a {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid black;
+    min-height: 50px;
 }
 
-.expendBtn {
+.info {
+    display: none;
+}
+
+.open {
+    display: inline;
+}
+
+.expand-btn {
     margin: auto;
     background-color: whitesmoke;
     transition: 0.3s;
     border: 0;
 }
 
-.expendBtn:hover {
+.expand-btn:hover {
     transform-origin: center;
     transform: scale(1.2);
 }

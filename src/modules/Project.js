@@ -2,15 +2,15 @@ export default class Project {
     constructor(title, description = 'No description', perm = false) {
         this.title = title;
         this.description = description;
-        this.projectTasks = [];
+        this.tasks = [];
         this.perm = perm;
     }
     addTask(task) {
-        this.projectTasks.push(task);
+        this.tasks.push(task);
         task.project = this.title;
     }
     delTask(task) {
-        const index = this.projectTasks.indexOf(task);
-        if (index > -1) this.projectTasks.splice(index, 1);
+        const index = this.tasks.indexOf(task);
+        if (index > -1) this.tasks.splice(index, 1);
     }
 };

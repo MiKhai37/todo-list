@@ -17,7 +17,7 @@ export default class Storage {
         projects.forEach(project => {
             const jsonProject = JSON.stringify(project)
             localStorage.setItem(project.title, jsonProject);
-            console.log(`${project.title} stored (${project.projectTasks.length} task)`)
+            console.log(`${project.title} stored (${project.tasks.length} task)`)
         });
     }
     retrieveData() {
