@@ -9,7 +9,7 @@ export default class UI {
     generateHeader() {
         const header = document.createElement('div');
         header.classList.add('top-nav');
-        header.innerHTML = `<h1>Projectdoro</h1>`;
+        header.innerHTML = `<h2>Projectdoro</h2>`;
         return header;
     }
     generateFooter() {
@@ -51,7 +51,7 @@ export default class UI {
                 deleteBtn.addEventListener('click', () => {
                     const index = projects.indexOf(project);
                     if (index > -1) projects.splice(index, 1);
-                    this.storage.storeData(projects);
+                    this.storage.storeProjects(projects);
                     this.refreshUI(projects, current);
                 });
                 projectDiv.appendChild(deleteBtn);
@@ -85,7 +85,7 @@ export default class UI {
             };
             const newProject = new Project(titleInput.value, descriptionInput.value);
             projects.push(newProject);
-            this.storage.storeData(projects);
+            this.storage.storeProjects(projects);
             this.refreshUI(projects, newProject);
         });
         addProjectDiv.appendChild(projectAddBtn)
@@ -135,13 +135,13 @@ export default class UI {
             checkBtn.addEventListener('click', () => {
                 checkBtn.classList.toggle('checked');
                 task.toggleIsDone();
-                this.storage.storeData(projects);
+                this.storage.storeProjects(projects);
                 this.refreshUI(projects, current);
             });
             const deleteBtn = this.generateBtn('del-btn', 'times');
             deleteBtn.addEventListener('click', () => {
                 current.delTask(task);
-                this.storage.storeData(projects);
+                this.storage.storeProjects(projects);
                 this.refreshUI(projects, current);
             });
             taskDiv.appendChild(infoDiv);
@@ -176,7 +176,7 @@ export default class UI {
                 return;
             };
             current.addTask(new Task(titleInput.value, descriptionInput.value))
-            this.storage.storeData(projects);
+            this.storage.storeProjects(projects);
             this.refreshUI(projects, current);
         })
         addTaskDiv.appendChild(taskAddBtn)

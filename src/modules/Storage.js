@@ -1,4 +1,5 @@
 import Project from './Project';
+import Task from './Task';
 
 export default class Storage {
     constructor() {
@@ -11,27 +12,19 @@ export default class Storage {
             this.isStorage = false;
           }
     }
-    storeData(projects) {
-        localStorage.clear()
-        // Store all projects
-        projects.forEach(project => {
-            const jsonProject = JSON.stringify(project)
-            localStorage.setItem(project.title, jsonProject);
-            console.log(`${project.title} stored (${project.tasks.length} task)`)
-        });
+    storeProjects(projects) {
+        const projectsJsonStr = JSON.stringify(projects)
+        localStorage.setItem('projects', projectsJsonStr) 
     }
-    retrieveData() {
-        const projects = [];
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            const obj = JSON.parse(localStorage.getItem(key));
-            
-            // Re-add Project Prototype
-            Object.setPrototypeOf(obj,Project.prototype);
-            projects.push(obj);
-            console.log(`${key} loaded`);
+    retrieveProjects() {
+        const projectsJsonStr = localStorage.getItem('projects');
+        const projectsObject = JSON.parse(projectsJsonStr);
+        const projects = projectsObject.map(project => Object.setPrototypeOf(project,Project.prototype));
+        projects.forEach(project => {
+            project.tasks.forEach(task => {
+                Object.setPrototypeOf(task,Task.prototype)
+            });
+        });
         return projects;
-        }
-
     }
 }

@@ -2,6 +2,7 @@ body, html {
     height: 100%;
     margin: 0;
     padding: 0;
+    background-color: #111;
 }
 
 a {
@@ -17,7 +18,7 @@ a {
 }
 
 .top-nav {
-    background-color: green;
+    background-color: #000;
     overflow: hidden;
     color: white;
     font-size: 25px;
@@ -27,6 +28,7 @@ a {
 .flex-container {
     display: flex;
     flex-direction: row;
+    color: white;
 }
 
 .projects {
@@ -34,15 +36,16 @@ a {
     display: flex;
     flex-direction: column;
     flex: 1;
-    background-color: darkslategray;
+    background-color: #111;
 }
 
 .project {
+    color: black;
     display: flex;
     flex-direction: column;
     position: relative;
     text-align: center;
-    background-color: whitesmoke;
+    background-color: orange;
     margin: 10px;
     padding: 10px;
     border-radius: 5px 15px;
@@ -54,15 +57,16 @@ a {
     display: flex;
     flex-direction: column;
     flex: 3;
-    background-color: slategray;
+    background-color: #111;
 }
 
 .task {
+    color: black;
     display: flex;
     flex-direction: column;
     position: relative;
     text-align: center;
-    background-color: whitesmoke;
+    background-color: orange;
     margin: 10px;
     padding: 10px;
     border-radius: 5px;
@@ -80,7 +84,7 @@ a {
 
 .expand-btn {
     margin: auto;
-    background-color: whitesmoke;
+    background-color: orange;
     transition: 0.3s;
     border: 0;
 }
@@ -94,7 +98,7 @@ a {
     position: absolute;
     right: 5px;
     bottom: 5px;
-    background-color: whitesmoke;
+    background-color: orange;
     transition: 0.3s;
     border: 0;
 }
@@ -113,7 +117,7 @@ a {
     position: absolute;
     right: 5px;
     top: 5px;
-    background-color: whitesmoke;
+    background-color: orange;
     transition: 0.3s;
     border: 0;
 }
@@ -126,7 +130,7 @@ a {
 
 
 .current {
-    background-color: blue;
+    background-color: purple;
 }
 
 
@@ -136,7 +140,7 @@ a {
 
 .add-btn {
     margin:auto;
-    background-color: whitesmoke;
+    background-color: orange;
     transition: 0.3s;
     border: 0;
 }
@@ -152,13 +156,13 @@ a {
     display: flex;
     flex-direction: column;
     flex: 2;
-    background-color: lightslategrey;
+    background-color: #111;
     transition: 1s;
 }
 
 
 .bottom-nav {
-    background-color: #555;
+    background-color: #000;
     overflow: hidden;
     position: fixed;
     bottom: 0;
@@ -166,4 +170,5 @@ a {
     text-align: center;
     color: white;
     padding: 10px;
+    margin-top: 10px;
 }
