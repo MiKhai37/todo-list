@@ -49,6 +49,10 @@ a {
     border: 1px solid black;
 }
 
+.current {
+    background-color: red;
+}
+
 .tasks {
     text-align: center;
     display: flex;
@@ -105,7 +109,7 @@ a {
     transform: scale(1.2);
 }
 
-.valid {
+.checked {
     color: green;
 }
 

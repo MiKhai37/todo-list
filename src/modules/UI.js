@@ -29,7 +29,7 @@ export default class UI {
         btn.innerHTML = `<i class="fa fa-${icon}"></i>`;
         return btn;
     }
-    generateProjects(projects) {
+    generateProjects(projects, current) {
         const projectsContainer = document.createElement('div');
         projectsContainer.classList.add('projects');
         
@@ -39,6 +39,10 @@ export default class UI {
         
         projects.forEach(project => {
             const projectDiv = document.createElement('div');
+            projectDiv.addEventListener('click', () => {
+                current = project;
+                this.refreshUI(projects, current);
+            });
             projectDiv.classList.add('project')
             projectDiv.textContent = project.title;
             if (!project.perm) {
@@ -47,10 +51,11 @@ export default class UI {
                     const index = projects.indexOf(project);
                     if (index > -1) projects.splice(index, 1);
                     this.storage.storeData(projects);
-                    this.refreshUI(projects, project.tasks)
+                    this.refreshUI(projects, current);
                 });
                 projectDiv.appendChild(deleteBtn);
             }
+            if (project == current) projectDiv.classList.toggle('current');
             projectsContainer.appendChild(projectDiv);
         });
 
@@ -75,7 +80,7 @@ export default class UI {
             const newProject = new Project(titleInput.value, descriptionInput.value);
             projects.push(newProject);
             this.storage.storeData(projects);
-            this.refreshUI(projects, newProject.tasks);
+            this.refreshUI(projects, newProject);
         });
         addProjectDiv.appendChild(projectAddBtn)
 
@@ -83,7 +88,7 @@ export default class UI {
 
         return projectsContainer;
     }
-    generateTasks(tasks, projects) {
+    generateTasks(projects, current) {
         const tasksContainer = document.createElement('div');
         tasksContainer.classList.add('tasks');
         
@@ -91,7 +96,7 @@ export default class UI {
         title.textContent = 'Tasks';
         tasksContainer.appendChild(title);
 
-        tasks.forEach(task => {
+        current.tasks.forEach(task => {
             const taskDiv = document.createElement('div');
             taskDiv.classList.add('task');
             taskDiv.textContent = task.title;
@@ -118,17 +123,20 @@ export default class UI {
                 }
             });
             const checkBtn = this.generateBtn('check-btn', 'check');
+            if (task.isDone) {
+                checkBtn.classList.add('checked')
+            }
             checkBtn.addEventListener('click', () => {
-                task.toggleIsDone;
+                checkBtn.classList.toggle('checked');
+                task.toggleIsDone();
                 this.storage.storeData(projects);
-                this.refreshUI(projects, tasks);
+                this.refreshUI(projects, current);
             });
             const deleteBtn = this.generateBtn('del-btn', 'times');
             deleteBtn.addEventListener('click', () => {
-                const index = tasks.indexOf(task);
-                if (index > -1) tasks.splice(index, 1);
+                current.delTask(task);
                 this.storage.storeData(projects);
-                this.refreshUI(projects, tasks);
+                this.refreshUI(projects, current);
             });
             taskDiv.appendChild(infoDiv);
             taskDiv.appendChild(expandBtn);
@@ -156,10 +164,9 @@ export default class UI {
         const taskAddBtn = this.generateBtn('add-btn', 'plus');
         taskAddBtn.id = 'add-task-btn';
         taskAddBtn.addEventListener('click', () => {
-            const newTask = new Task(titleInput.value, descriptionInput.value);
-            tasks.push(newTask);
+            current.addTask(new Task(titleInput.value, descriptionInput.value))
             this.storage.storeData(projects);
-            this.refreshUI(projects, tasks);
+            this.refreshUI(projects, current);
         })
         addTaskDiv.appendChild(taskAddBtn)
 
@@ -177,7 +184,7 @@ export default class UI {
 
         return timersContainer;
     }
-    generateMain(projects, tasks) {
+    generateMain(projects, current) {
         const mainDiv = document.createElement('div')
         mainDiv.id = 'main'
         
@@ -185,8 +192,8 @@ export default class UI {
         const footer = this.generateFooter();
         const flexContainer = this.generateFlexContainer();
 
-        flexContainer.appendChild(this.generateProjects(projects))
-        flexContainer.appendChild(this.generateTasks(tasks, projects))
+        flexContainer.appendChild(this.generateProjects(projects, current))
+        flexContainer.appendChild(this.generateTasks(projects, current))
         flexContainer.appendChild(this.generateTimers())
 
         mainDiv.appendChild(header);
@@ -195,12 +202,9 @@ export default class UI {
 
         return mainDiv
     }
-    refreshUI(projects, tasks) {
+    refreshUI(projects, current) {
         const oldMainDiv = document.getElementById("main");
-        const newMainDiv = this.generateMain(projects, tasks);
+        const newMainDiv = this.generateMain(projects, current);
         document.body.replaceChild(newMainDiv, oldMainDiv);
     }
-    /* initEventListener(projects, project) {
-        
-    } */
 }

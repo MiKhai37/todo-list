@@ -5,7 +5,6 @@ import Storage from './modules/Storage.js';
 import UI from './modules/UI'
 
 const ui = new UI();
-const storage = new Storage();
 let projects = [];
 
 if (localStorage.length == 0) {
@@ -20,11 +19,12 @@ if (localStorage.length == 0) {
     Object.setPrototypeOf(obj,Project.prototype);
     projects.push(obj);
     console.log(`${key} loaded`);
+    obj.tasks.forEach(task => {Object.setPrototypeOf(task, Task.prototype)});
     //projects = storage.retrieveData();
   }  
 }
 
-const currentProject = projects[0];
-const main = ui.generateMain(projects, currentProject.tasks);
+const current = projects[0];
+const main = ui.generateMain(projects, current);
 
 document.body.appendChild(main);
