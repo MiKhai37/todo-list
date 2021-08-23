@@ -18,6 +18,39 @@ export default class UI {
         footer.innerHTML = 'Made by Michael Tanguy <a href="https://github.com/MiKhai37" target="_blank"><i class="fa fa-github"></i></a>';
         return footer;
     }
+    generateDateinput() {
+        const dateInput = document.createElement('input');
+        dateInput.classList.add('input');
+        dateInput.type = 'date';
+        let date = new Date();
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        if (month < 10) month = "0" + month;
+        if (day < 10) day = "0" + day;
+        let today = `${year}-${month}-${day}`;
+        dateInput.value = today;
+        return dateInput;
+    }
+    generateTitleInput() {
+        const titleInput = document.createElement('input');
+        titleInput.classList.add('input');
+        titleInput.placeholder = 'New Task Name';
+        titleInput.required = true;
+        return titleInput
+    }
+    generateDescInput() {
+        const descInput = document.createElement('input');
+        descInput.classList.add('input');
+        descInput.placeholder = 'Task Description';
+        return descInput
+    }
+    generateBtn(btnClass, icon) {
+        const btn = document.createElement('button');
+        btn.classList.add(btnClass);
+        btn.innerHTML = `<i class="fa fa-${icon}"></i>`;
+        return btn;
+    }
     generateFlexContainer(projects, current) {
         const flexContainer = document.createElement('div');
         flexContainer.classList.add('flex-container');
@@ -25,12 +58,6 @@ export default class UI {
         flexContainer.appendChild(this.generateTasks(projects, current))
         flexContainer.appendChild(this.generateTimers())
         return flexContainer;
-    }
-    generateBtn(btnClass, icon) {
-        const btn = document.createElement('button');
-        btn.classList.add(btnClass);
-        btn.innerHTML = `<i class="fa fa-${icon}"></i>`;
-        return btn;
     }
     generateProjects(projects, current) {
         const projectsContainer = document.createElement('div');
@@ -175,33 +202,7 @@ export default class UI {
         
         return tasksContainer;
     }
-    generateDateinput() {
-        const dateInput = document.createElement('input');
-        dateInput.classList.add('input');
-        dateInput.type = 'date';
-        let date = new Date();
-        let day = date.getDate();
-        let month = date.getMonth() + 1;
-        let year = date.getFullYear();
-        if (month < 10) month = "0" + month;
-        if (day < 10) day = "0" + day;
-        let today = `${year}-${month}-${day}`;
-        dateInput.value = today;
-        return dateInput;
-    }
-    generateTitleInput() {
-        const titleInput = document.createElement('input');
-        titleInput.classList.add('input');
-        titleInput.placeholder = 'New Task Name';
-        titleInput.required = true;
-        return titleInput
-    }
-    generateDescInput() {
-        const descInput = document.createElement('input');
-        descInput.classList.add('input');
-        descInput.placeholder = 'Task Description';
-        return descInput
-    }
+    
     generateTimers() {
         const timersContainer = document.createElement('div');
         timersContainer.classList.add('timers');
