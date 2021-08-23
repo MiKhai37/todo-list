@@ -3,19 +3,31 @@ import Task from './Task';
 
 export default class Storage {
     constructor() {
-        // Check if storage is available
         if (typeof(Storage) !== "undefined") {
-            console.log('Storage is available')
+            console.log('Storage is available');
             this.isStorage = true;
           } else {
-            console.log('Storage isn\'t availble, please use a modern browser')
+            console.log('Storage isn\'t availble, please use a modern browser');
             this.isStorage = false;
           }
     }
     storeProjects(projects) {
-        const projectsJsonStr = JSON.stringify(projects)
-        localStorage.setItem('projects', projectsJsonStr) 
+        const projectsJsonStr = JSON.stringify(projects);
+        localStorage.setItem('projects', projectsJsonStr) ;
     }
+    storeCurrent(current) {
+        const currentJsonStr = JSON.stringify(current);
+        localStorage.setItem('current', currentJsonStr);
+    }
+    storeTodoList(todoList) {
+        const todoListJsonStr = JSON.stringify(todoList);
+        localStorage.setItem('todoList', todoListJsonStr);
+    }
+    storeThing(thingArray, thingName) {
+        const thingJsonStr = JSON.stringify(thingArray);
+        localStorage.setItem(thingName, thingJsonStr);
+    }
+
     retrieveProjects() {
         const projectsJsonStr = localStorage.getItem('projects');
         const projectsObject = JSON.parse(projectsJsonStr);

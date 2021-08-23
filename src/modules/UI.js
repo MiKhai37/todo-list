@@ -18,9 +18,12 @@ export default class UI {
         footer.innerHTML = 'Made by Michael Tanguy <a href="https://github.com/MiKhai37" target="_blank"><i class="fa fa-github"></i></a>';
         return footer;
     }
-    generateFlexContainer() {
+    generateFlexContainer(projects, current) {
         const flexContainer = document.createElement('div');
         flexContainer.classList.add('flex-container');
+        flexContainer.appendChild(this.generateProjects(projects, current))
+        flexContainer.appendChild(this.generateTasks(projects, current))
+        flexContainer.appendChild(this.generateTimers())
         return flexContainer;
     }
     generateBtn(btnClass, icon) {
@@ -45,17 +48,17 @@ export default class UI {
             });
             projectDiv.classList.add('project')
             projectDiv.textContent = project.title;
-            if (!project.perm) {
-                const deleteBtn = this.generateBtn('del-btn', 'times');
-                if (project == current) {deleteBtn.classList.toggle('current')};
-                deleteBtn.addEventListener('click', () => {
-                    const index = projects.indexOf(project);
-                    if (index > -1) projects.splice(index, 1);
-                    this.storage.storeProjects(projects);
-                    this.refreshUI(projects, current);
-                });
-                projectDiv.appendChild(deleteBtn);
-            }
+            
+            const deleteBtn = this.generateBtn('del-btn', 'times');
+            if (project == current) {deleteBtn.classList.toggle('current')};
+            deleteBtn.addEventListener('click', () => {
+                const index = projects.indexOf(project);
+                if (index > -1) projects.splice(index, 1);
+                this.storage.storeProjects(projects);
+                this.refreshUI(projects, current);
+            });
+            projectDiv.appendChild(deleteBtn);
+            
             if (project == current) {projectDiv.classList.toggle('current')};
             projectsContainer.appendChild(projectDiv);
         });
@@ -63,21 +66,13 @@ export default class UI {
         const addProjectDiv = document.createElement('div');
         addProjectDiv.classList.add('task');
 
-        const titleInput = document.createElement('input');
-        titleInput.id = 'new-project-title';
-        titleInput.classList.add('input');
-        titleInput.placeholder = 'New Project Name';
-        titleInput.required = true;
-        addProjectDiv.appendChild(titleInput);
+        const titleInput = this.generateTitleInput();
+        const descInput = this.generateDescInput()
 
-        const descriptionInput = document.createElement('input');
-        descriptionInput.id = 'new-project-desc';
-        descriptionInput.classList.add('input');
-        descriptionInput.placeholder = 'Task Desciption';
-        addProjectDiv.appendChild(descriptionInput);
+        addProjectDiv.appendChild(titleInput);
+        addProjectDiv.appendChild(descInput);
 
         const projectAddBtn = this.generateBtn('add-btn', 'folder-plus');
-        projectAddBtn.id = 'add-project-btn';
         projectAddBtn.addEventListener('click', () => {
             if (titleInput.validity.valueMissing) {
                 alert('Please enter a project name');
@@ -99,7 +94,7 @@ export default class UI {
         tasksContainer.classList.add('tasks');
         
         const title = document.createElement('h3');
-        title.textContent = 'Tasks';
+        title.textContent = current.title;
         tasksContainer.appendChild(title);
 
         current.tasks.forEach(task => {
@@ -151,39 +146,61 @@ export default class UI {
 
             tasksContainer.appendChild(taskDiv);
         })
-
+        
         const addTaskDiv = document.createElement('div');
         addTaskDiv.classList.add('task');
+        addTaskDiv.classList.add('add-task')
 
-        const titleInput = document.createElement('input');
-        titleInput.id = 'new-task-title';
-        titleInput.classList.add('input');
-        titleInput.placeholder = 'New Task Name';
-        titleInput.required = true;
+        const titleInput = this.generateTitleInput();
+        const descInput = this.generateDescInput()
+        const dateInput = this.generateDateinput()
+
         addTaskDiv.appendChild(titleInput);
-
-        const descriptionInput = document.createElement('input');
-        descriptionInput.id = 'new-task-desc';
-        descriptionInput.classList.add('input');
-        descriptionInput.placeholder = 'Task Desciption';
-        addTaskDiv.appendChild(descriptionInput);
-
+        addTaskDiv.appendChild(descInput);
+        addTaskDiv.appendChild(dateInput);
+        
         const taskAddBtn = this.generateBtn('add-btn', 'plus');
-        taskAddBtn.id = 'add-task-btn';
         taskAddBtn.addEventListener('click', () => {
             if (titleInput.validity.valueMissing) {
                 alert('Please enter a task name');
                 return;
             };
-            current.addTask(new Task(titleInput.value, descriptionInput.value))
+            current.addTask(new Task(titleInput.value, descInput.value, current, dateInput.value))
             this.storage.storeProjects(projects);
             this.refreshUI(projects, current);
         })
-        addTaskDiv.appendChild(taskAddBtn)
-
+        addTaskDiv.appendChild(taskAddBtn);
+    
         tasksContainer.appendChild(addTaskDiv);
-
+        
         return tasksContainer;
+    }
+    generateDateinput() {
+        const dateInput = document.createElement('input');
+        dateInput.classList.add('input');
+        dateInput.type = 'date';
+        let date = new Date();
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        if (month < 10) month = "0" + month;
+        if (day < 10) day = "0" + day;
+        let today = `${year}-${month}-${day}`;
+        dateInput.value = today;
+        return dateInput;
+    }
+    generateTitleInput() {
+        const titleInput = document.createElement('input');
+        titleInput.classList.add('input');
+        titleInput.placeholder = 'New Task Name';
+        titleInput.required = true;
+        return titleInput
+    }
+    generateDescInput() {
+        const descInput = document.createElement('input');
+        descInput.classList.add('input');
+        descInput.placeholder = 'Task Description';
+        return descInput
     }
     generateTimers() {
         const timersContainer = document.createElement('div');
@@ -201,11 +218,9 @@ export default class UI {
         
         const header = this.generateHeader();
         const footer = this.generateFooter();
-        const flexContainer = this.generateFlexContainer();
+        const flexContainer = this.generateFlexContainer(projects, current);
 
-        flexContainer.appendChild(this.generateProjects(projects, current))
-        flexContainer.appendChild(this.generateTasks(projects, current))
-        flexContainer.appendChild(this.generateTimers())
+        
 
         mainDiv.appendChild(header);
         mainDiv.appendChild(flexContainer);

@@ -1,8 +1,14 @@
+:root {
+    --main-color:	hsl(21, 91%, 46%);
+    --second-color: hsl(37, 91%, 46%);
+    --third-color: hsl(345, 91%, 42%);
+}   
+
 body, html {
     height: 100%;
     margin: 0;
     padding: 0;
-    background-color: #111;
+    background-color: var(--third-color);
 }
 
 a {
@@ -36,7 +42,7 @@ a {
     display: flex;
     flex-direction: column;
     flex: 1;
-    background-color: #111;
+    position: relative;
 }
 
 .project {
@@ -45,11 +51,12 @@ a {
     flex-direction: column;
     position: relative;
     text-align: center;
-    background-color: orange;
+    background-color: var(--second-color);
     margin: 10px;
     padding: 10px;
     border-radius: 5px 15px;
     border: 1px solid black;
+    transition: 1S;
 }
 
 .tasks {
@@ -57,7 +64,6 @@ a {
     display: flex;
     flex-direction: column;
     flex: 3;
-    background-color: #111;
 }
 
 .task {
@@ -66,12 +72,16 @@ a {
     flex-direction: column;
     position: relative;
     text-align: center;
-    background-color: orange;
+    background-color: var(--second-color);
     margin: 10px;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 15px;
     border: 1px solid black;
     min-height: 50px;
+}
+
+.add-task {
+    max-width: 300px;
 }
 
 .info {
@@ -84,7 +94,7 @@ a {
 
 .expand-btn {
     margin: auto;
-    background-color: orange;
+    background-color: var(--second-color);
     transition: 0.3s;
     border: 0;
 }
@@ -96,9 +106,9 @@ a {
 
 .check-btn {
     position: absolute;
-    right: 5px;
-    bottom: 5px;
-    background-color: orange;
+    right: 10px;
+    bottom: 10px;
+    background-color: var(--second-color);
     transition: 0.3s;
     border: 0;
 }
@@ -115,11 +125,12 @@ a {
 
 .del-btn {
     position: absolute;
-    right: 5px;
-    top: 5px;
-    background-color: orange;
+    right: 10px;
+    top: 10px;
+    background-color: var(--second-color);
     transition: 0.3s;
     border: 0;
+    margin: auto;
 }
 
 .del-btn:hover {
@@ -130,7 +141,7 @@ a {
 
 
 .current {
-    background-color: purple;
+    background-color: var(--main-color);
 }
 
 
@@ -140,7 +151,7 @@ a {
 
 .add-btn {
     margin:auto;
-    background-color: orange;
+    background-color: var(--second-color);
     transition: 0.3s;
     border: 0;
 }
@@ -156,7 +167,6 @@ a {
     display: flex;
     flex-direction: column;
     flex: 2;
-    background-color: #111;
     transition: 1s;
 }
 
